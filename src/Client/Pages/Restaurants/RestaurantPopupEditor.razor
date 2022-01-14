@@ -1,0 +1,62 @@
+﻿<ModalDialog @ref="_modalDialog">
+	<div class="alert-dialog" style="min-width:400px;">
+		<div class="alert-title">
+			@*<div class="title-text">Restaurant editor</div>*@
+			@*<div class="close-button" @onclick="() => CloseDialog(false)">x</div>*@
+		</div>
+		<div class="alert-content">
+			<div>
+				<div class="arizonaTableTitle">Restaurant editor</div>
+				<table class="arizonaTable" style="width:100%;text-align:left;">
+					<thead>
+						<tr>
+							<th>Key</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>RestaurantID</td>
+						<td>@_restaurant.RestaurantID</td>
+					</tr>
+					<tr>
+						<td>Restaurant name</td>
+						<td><input @bind="@_restaurant.Name" /></td>
+					</tr>
+					<tr>
+						<td>Address</td>
+						<td><input @bind="@_restaurant.Address" /></td>
+					</tr>
+					<tr>
+						<td>Description</td>
+						<td><input @bind="@_restaurant.Description" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="alert-buttons">
+			<button class="btn btn-outline-success" @onclick="() => CloseDialog(true)">Save</button>
+			<button class="btn btn-outline-primary" @onclick="() => CloseDialog(false)">Cancel</button>
+		</div>
+	</div>
+</ModalDialog>
+
+@code{
+	ModalDialog _modalDialog;
+	RestaurantExtendedResult _restaurant;
+	bool _dialogResult;
+	Task _closePending1;
+
+	private async Task CloseDialog(bool isYes)
+	{
+		_dialogResult = isYes;
+		await _modalDialog.HideModalDialog();
+	}
+
+	public async Task<bool> ShowDialog(RestaurantExtendedResult restaurant)
+	{
+		_restaurant = restaurant;
+		_closePending1 = _modalDialog.ShowModalDialog();
+		await _closePending1;
+		return _dialogResult;
+	}
+}

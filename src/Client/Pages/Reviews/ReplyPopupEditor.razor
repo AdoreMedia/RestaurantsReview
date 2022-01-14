@@ -1,0 +1,48 @@
+﻿<ModalDialog @ref="_modalDialog">
+	<div class="alert-dialog reviewPopup" style="min-width:400px;background:whitesmoke;">
+		<div class="alert-content">
+			<div>
+				<div style="padding: 10px; background: #ccefff; margin: 20px;">
+					<div>@Author @@ @ReviewDate</div>
+					<div style="padding:5px 0;"><StarRating AverageRating="@Rating" /> &bull; @Rating</div>
+					<div>@Comment</div>
+				</div>
+				<div style="padding:20px;">
+					<label>Your reply</label><br />
+					<textarea style="height:100px;width:100%;" @bind="this.ReplyText"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="alert-buttons">
+			<button class="btn btn-outline-success" @onclick="() => CloseDialog(true)">Save</button>
+			<button class="btn btn-outline-primary" @onclick="() => CloseDialog(false)">Cancel</button>
+		</div>
+	</div>
+</ModalDialog>
+
+@code{
+	ModalDialog _modalDialog;
+	bool _dialogResult;
+	Task _closePendingTask;
+
+	public DateTimeOffset ReviewDate;
+	public string Author;
+	public string Comment;
+	public decimal? Rating;
+	public string ReplyText;
+
+	private async Task CloseDialog(bool isYes)
+	{
+		_dialogResult = isYes;
+		await _modalDialog.HideModalDialog();
+	}
+
+	public async Task<bool> ShowDialog()
+	{
+		_dialogResult = false;
+		_closePendingTask = _modalDialog.ShowModalDialog();
+		await _closePendingTask;
+		return _dialogResult;
+	}
+
+}

@@ -1,0 +1,83 @@
+﻿<ModalDialog @ref="_modalDialog">
+	<div class="alert-dialog" style="min-width:400px;">
+		<div class="alert-title">
+			@*<div class="title-text">User editor</div>*@
+			@*<div class="close-button" @onclick="() => CloseDialog(false)">x</div>*@
+		</div>
+		<div class="alert-content">
+			<div>
+				<div class="arizonaTableTitle">User editor</div>
+				<table class="arizonaTable" style="width:100%;text-align:left;">
+					<thead>
+						<tr>
+							<th>Key</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>MemberID</td>
+						<td>@_memberDetails.MemberID</td>
+					</tr>
+					<tr>
+						<td>First name</td>
+						<td>@_memberDetails.FirstName</td>
+					</tr>
+					<tr>
+						<td>Last name</td>
+						<td>@_memberDetails.LastName</td>
+					</tr>
+					<tr>
+						<td>E-mail</td>
+						<td>@_memberDetails.Email</td>
+					</tr>
+					<tr>
+						<td>Username</td>
+						<td>@_memberDetails.Username</td>
+					</tr>
+					<tr>
+						<td>Logins count</td>
+						<td>@_memberDetails.LoginsCount</td>
+					</tr>
+					<tr>
+						<td>Roles</td>
+						<td>
+							@foreach (var role in _memberDetails.Roles)
+							{
+								<label style="display:block;margin:5px 0;cursor:pointer;">
+									<input type="checkbox" @bind="@role.IsAssigned" />
+									@role.RoleName
+								</label>
+							}
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="alert-buttons">
+			<button class="btn btn-outline-success" @onclick="() => CloseDialog(true)">Save</button>
+			<button class="btn btn-outline-primary" @onclick="() => CloseDialog(false)">Cancel</button>
+		</div>
+	</div>
+</ModalDialog>
+
+@code{
+	ModalDialog _modalDialog;
+	MembersResult _memberDetails;
+	bool _dialogResult;
+	Task _closePendingTask;
+
+	private async Task CloseDialog(bool isYes)
+	{
+		_dialogResult = isYes;
+		await _modalDialog.HideModalDialog();
+	}
+
+	public async Task<bool> ShowDialog(MembersResult member)
+	{
+		_memberDetails = member;
+		_closePendingTask = _modalDialog.ShowModalDialog();
+		await _closePendingTask;
+		return _dialogResult;
+	}
+
+}

@@ -1,0 +1,57 @@
+﻿<ModalDialog @ref="_modalDialog">
+	<div class="alert-dialog reviewPopup" style="min-width:400px;background:whitesmoke;">
+		<div class="alert-content">
+			<div>
+				<div style="padding:20px;">
+					<h3>@RestaurantName</h3>
+					<label style="margin-top:20px;">How do you rate this restaurant?</label>
+					<div>
+						@foreach (int starValue in this.Stars)
+						{
+							<img @onclick="()=>StarClick(starValue)"
+								 src="images/stars/@(starValue <= this.Rating ? "star-yellow.png" : "star-black-outline.png")"
+								 class="ratingStar" />
+						}
+						<a href="javascript:false" @onclick="()=>this.Rating = null" style="margin-left:10px;">clear</a>
+					</div>
+					<label style="margin-top:30px;">Your comment</label><br />
+					<textarea style="height:100px;width:100%;" @bind="this.Comment"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="alert-buttons">
+			<button class="btn btn-outline-success" @onclick="() => CloseDialog(true)">Save</button>
+			<button class="btn btn-outline-primary" @onclick="() => CloseDialog(false)">Cancel</button>
+		</div>
+	</div>
+</ModalDialog>
+
+@code{
+	ModalDialog _modalDialog;
+	bool _dialogResult;
+	Task _closePendingTask;
+	List<int> Stars = Enumerable.Range(1, 5).ToList();
+
+	public string RestaurantName;
+	public string Comment;
+	public decimal? Rating;
+
+	private async Task CloseDialog(bool isYes)
+	{
+		_dialogResult = isYes;
+		await _modalDialog.HideModalDialog();
+	}
+
+	public async Task<bool> ShowDialog()
+	{
+		_dialogResult = false;
+		_closePendingTask = _modalDialog.ShowModalDialog();
+		await _closePendingTask;
+		return _dialogResult;
+	}
+
+	private void StarClick(int starValue)
+	{
+		this.Rating = starValue;
+	}
+}

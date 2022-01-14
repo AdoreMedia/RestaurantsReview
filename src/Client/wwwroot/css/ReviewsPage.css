@@ -1,0 +1,87 @@
+.restaurantItem1 {
+	background-color: white;
+	margin-bottom: 20px;
+	max-width: 800px;
+	box-shadow: 0 0 6px silver;
+}
+
+.restaurantItem1 .ratingStar {
+	width: 20px;
+	height: 20px;
+	margin-right: 3px;
+}
+
+.restaurantItem1 .overview1 {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	position: relative;
+}
+
+.restaurantItem1 .overview1 .logo1 {
+	width: 200px;
+	height: 150px;
+	background: center center no-repeat silver;
+	background-size: cover;
+}
+
+.restaurantItem1 .overview1 .content1 {
+	padding: 10px 20px;
+}
+
+.restaurantItem1 .overview1 .content1 h2 {
+	font-size: 18px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+}
+
+.restaurantItem1 .overview1 .content1 h4 {
+	font-size: 16px;
+}
+
+.restaurantItem1 .overview1 .content1 h5 {
+	font-size: 14px;
+	margin: 5px 0;
+}
+
+.restaurantItem1 .overview1 .content1 .reviewContainer .addReview:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.restaurantItem1 .details1 {
+	background: white;
+	overflow: hidden;
+	height: 0;
+	opacity: 0;
+	transition: all ease 0.4s;
+}
+
+.restaurantItem1 .details1.shown1 {
+	height: auto;
+	opacity: 1;
+}
+
+.restaurantItem1 .details1 .details2 {
+	padding: 10px;
+}
+
+.restaurantItem1 .details1 .details2 .singleReview1 {
+	padding: 10px;
+	border-bottom: solid 1px gainsboro;
+}
+
+.restaurantItem1 .details1 .details2 .singleReview1 > b:nth-of-type(n+2) {
+	margin-top: 10px;
+	display: block;
+}
+
+.reviewPopup .ratingStar {
+	width: 20px;
+	height: 20px;
+	margin-right: 3px;
+	cursor: pointer;
+}
+
+/*# sourceMappingURL=ReviewsPage.css.map */

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@inject AppModel App
+@inject NavigationManager Nav
+@if (App.IsAuthenticated)
+{
+	Nav.NavigateTo("/");
+}
+else
+{
+<div class="page">
+	<div class="main">
+		<div class="content px-4">
+			@Body
+		</div>
+	</div>
+</div>
+}

@@ -1,0 +1,29 @@
+@inject NavigationManager Nav
+@inject AppModel App1
+@inject BrowserContext Browser
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true" OnNavigateAsync="HandleNavigatingAsync">
+	<Navigating>
+		<div>Navigating...</div>
+	</Navigating>
+	<Found Context="routeData">
+		@{
+			Console.WriteLine("Found route");
+		}
+		<RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+	</Found>
+	<NotFound>
+		@{
+			Console.WriteLine("Not found route");
+			Nav.NavigateTo("/");
+		}
+		<LayoutView Layout="@typeof(MainLayout)">
+			<p>Sorry, there's nothing at this address.</p>
+		</LayoutView>
+	</NotFound>
+</Router>
+@code{
+	private async Task HandleNavigatingAsync()
+	{
+		await App1.RestoreUserInfoAsync();
+	}
+}

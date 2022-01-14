@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "LiteLayout.razor.css",
+	"sources": [
+		"LiteLayout.razor.scss"
+	],
+	"names": [],
+	"mappings": "AAAA,AAAA,KAAK,CAAC;CACL,QAAQ,EAAE,QAAQ;CAClB,OAAO,EAAE,IAAI;CACb,cAAc,EAAE,MAAM;CACtB,UAAU,EAAE,OAAO;CACnB;;AAED,AAAA,KAAK,CAAC;CACL,IAAI,EAAE,CAAC;CACP,UAAU,EAAE,KAAK;CACjB;;AAED,AAAA,QAAQ,CAAC;CACR,UAAU,EAAE,IAAI;CAChB"
+}

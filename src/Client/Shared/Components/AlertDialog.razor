@@ -1,0 +1,62 @@
+﻿<ModalDialog @ref="dialog1">
+	<div class="alert-dialog">
+		<div class="alert-title">
+			@*@if (!string.IsNullOrEmpty(this.Title))
+			{
+				<div class="title-text">@Title</div>
+			}*@
+			@*<div class="close-button" @onclick="() => HideDialog(false)">x</div>*@
+		</div>
+		<div class="alert-content">
+			<div class="alert-body">
+				@{ 
+					int cnt = 0;
+					foreach (string line in Content)
+					{
+						if(cnt++ > 0)
+						{
+							<br/>
+						}
+						@(new MarkupString(line))
+					}
+				}
+			</div>
+		</div>
+		<div class="alert-buttons">
+			@if (IsConfirm)
+			{
+				<button class="btn btn-outline-danger" @onclick="() => HideDialog(true)">Yes</button>
+				<button class="btn btn-outline-primary" @onclick="() => HideDialog(false)">No</button>
+			}
+			else
+			{
+				<button class="btn btn-outline-primary" @onclick="() => HideDialog(true)">OK</button>
+			}
+		</div>
+	</div>
+</ModalDialog>
+
+@code {
+	protected bool IsConfirm { get; set; }
+
+	private ModalDialog dialog1;
+
+	private List<string> Content;
+
+	bool dialogResult;
+	Task closePending1;
+
+	private async Task HideDialog(bool isYes)
+	{
+		dialogResult = isYes;
+		await dialog1.HideModalDialog();
+	}
+
+	public async Task<bool> ShowDialog(string[] lines)
+	{
+		this.Content = lines.ToList();
+		closePending1 = dialog1.ShowModalDialog();
+		await closePending1;
+		return dialogResult;
+	}
+}

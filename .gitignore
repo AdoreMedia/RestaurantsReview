@@ -1,0 +1,32 @@
+obj/
+bin/
+*.suo
+*.vs
+*.user
+*.vssscc
+*.vspscc
+TestResults/
+*.jfm
+*.dbmdl
+packages
+Packages
+
+**/ArizonaWeb/App_Data/JobApplicationDocument/*.jpg
+**/ArizonaWeb/App_Data/JobApplicationImage/Image/*.jpg
+**/ArizonaWeb/App_Data/JobApplicationImage/Thumb/*.jpg
+**/ArizonaWeb/App_Data/DirClientImage/Image/*.jpg
+**/ArizonaWeb/App_Data/DirClientImage/Thumb/*.jpg
+**/ArizonaWeb/App_Data/PrintLog/*.pdf
+**/ArizonaWeb/App_Data/PrintLog/*.txt
+**/ArizonaWeb/App_Data/DirClientQRcode/*.png
+
+# exclude .js and .js.map files:
+**/WebLib/Engine/Src/**/*.js
+**/WebLib/Engine/Src/**/*.js.map
+
+/CalystoShared/Calysto-ElmahCore/ElmahCore.Web/LogDB/dbELmahWorkingCopy.db
+/HitAuto/HitWeb/HitWebCore/App_Data
+/Privredni/Privredni.Spider/CompanyWallContact
+
+# exclude Blazor generated files:
+**/wwwroot/_framework/**

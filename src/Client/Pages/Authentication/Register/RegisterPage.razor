@@ -1,0 +1,129 @@
+﻿@page "/register"
+@layout LiteLayout
+@using Models
+@inject RestaurantsReviewClient Api
+@inject NavigationManager Navigation
+<div class="loginForm">
+	<EditForm EditContext="@_editContext">
+		<DataAnnotationsValidator />
+
+		<div class="company1">Restaurants Review</div>
+		<div class="title1">Create your new account</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.FirstName))</label>
+			<InputText class="input1" @bind-Value="_formModel.FirstName"></InputText>
+			<ValidationMessage For="()=>_formModel.FirstName" />
+		</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.LastName))</label>
+			<InputText class="input1" @bind-Value="_formModel.LastName"></InputText>
+			<ValidationMessage For="()=>_formModel.LastName" />
+		</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.Email))</label>
+			<InputText type="email" class="input1" @bind-Value="_formModel.Email"></InputText>
+			<ValidationMessage For="()=>_formModel.Email" />
+		</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.Username))</label>
+			<InputText class="input1" @bind-Value="_formModel.Username"></InputText>
+			<ValidationMessage For="()=>_formModel.Username" />
+		</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.Password))</label>
+			<InputText type="password" class="input1" @bind-Value="_formModel.Password"></InputText>
+			<ValidationMessage For="()=>_formModel.Password" />
+		</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.RepeatPassword))</label>
+			<InputText type="password" class="input1" @bind-Value="_formModel.RepeatPassword"></InputText>
+			<ValidationMessage For="()=>_formModel.RepeatPassword" />
+		</div>
+
+		<div style="color:@(_response?.IsError == true ? "red" : "green")">@_response?.Message</div>
+
+		<div class="formItem">
+			<button disabled="@_isLoading" @onclick="CreateAccount" class="button1">
+				Create Account
+				<Spinner IsVisible="@_isLoading" />
+			</button>
+		</div>
+
+		<div class="bottomLink">
+			<a href="/login">Already have an account?</a>
+		</div>
+
+	</EditForm>
+</div>
+
+@code {
+	MessageItem _response;
+	bool _isLoading;
+	EditContext _editContext;
+	ValidationMessageStore _messageStore;
+	RegisterFormModel _formModel = new RegisterFormModel();
+
+	protected override void OnInitialized()
+	{
+		_editContext = new EditContext(this._formModel);
+		_messageStore = new ValidationMessageStore(this._editContext);
+		_editContext.OnFieldChanged += (s, e) => _messageStore.Clear(e.FieldIdentifier);
+	}
+
+	private async Task CreateAccount()
+	{
+		if (_editContext.Validate())
+		{
+			_messageStore.Clear(_editContext.Field(nameof(this._formModel.RepeatPassword)));
+			if (this._formModel.Password != this._formModel.RepeatPassword)
+			{
+				_messageStore.Add(_editContext.Field(nameof(this._formModel.RepeatPassword)),
+					$"{_formModel.GetDisplayName(nameof(this._formModel.Password))} and {_formModel.GetDisplayName(nameof(this._formModel.RepeatPassword))} don't match.");
+			}
+			else
+			{
+				Console.WriteLine("Valid form");
+				try
+				{
+					_isLoading = true;
+					_response = null;
+					this.StateHasChanged();
+
+					var ff = this._formModel;
+					_response = await Api.RegisterUserAsync(ff.FirstName, ff.LastName, ff.Email, ff.Username, ff.Password);
+
+					this.StateHasChanged();
+
+					if (_response.IsError)
+					{
+						_isLoading = false;
+					}
+					else
+					{
+						await Task.Delay(1000);
+						Navigation.NavigateTo("/login");
+					}
+
+					this.StateHasChanged();
+
+				}
+				finally
+				{
+					_isLoading = false;
+				}
+
+			}
+		}
+		else
+		{
+			Console.WriteLine("Invalid form");
+		}
+	}
+
+}

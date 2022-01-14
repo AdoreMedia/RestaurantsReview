@@ -1,0 +1,60 @@
+﻿@inherits LayoutComponentBase
+@inject AppModel App
+@implements IDisposable
+@inject NavigationManager Nav
+@if (!App.IsAuthenticated)
+{
+	Nav.NavigateTo("/login");
+}
+else
+{
+<div class="page">
+	<div class="sidebar">
+		<NavMenu />
+	</div>
+
+	<div class="main">
+		<div class="top-row px-4">
+			<div>@BlazorClientInfo.Version</div>
+			<div style="color:white;" class="ml-md-auto">
+				@if (App.IsAuthenticated)
+				{
+					<a href="#" style="color:white;" @onclick="LogOut">@App.User?.GetDisplayName() (log-out)</a>
+				}
+				else
+				{
+					<a href="/login" style="color:white;">Log-in</a>
+				}
+			</div>
+			
+		</div>
+
+		<div class="content px-4">
+			@Body
+		</div>
+	</div>
+</div>
+}
+@code{
+	private void NotifyModelChanged(object sender, PropertyChangedEventArgs e)
+	{
+		this.StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		App.PropertyChanged -= NotifyModelChanged;
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		App.PropertyChanged += NotifyModelChanged;
+		await base.OnInitializedAsync();
+	}
+
+	private async Task LogOut()
+	{
+		await App.LogOutUserAsync();
+		Nav.NavigateTo("/login");
+	}
+}

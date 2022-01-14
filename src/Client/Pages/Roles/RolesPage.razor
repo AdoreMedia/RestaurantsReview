@@ -1,0 +1,162 @@
+﻿@page "/roles"
+@inject RestaurantsReviewClient Api
+@inject AppModel App
+
+<h3>Roles</h3>
+
+@if (_roles == null)
+{
+	<Spinner Size="30" />
+}
+else if (!_roles.Any())
+{
+	<p>No roles available</p>
+}
+else
+{
+	<div style="display:inline-block;">
+		<div style="margin-bottom: 5px;">
+			<button class="btn btn-primary btn-sm" @onclick="AddRole">
+				<img src="/icons/add.png" style="cursor:pointer;" />
+				Add Role
+			</button>
+		</div>
+		<table class="arizonaTable">
+			<thead>
+				<tr>
+					<th>RoleID</th>
+					<th>Role name</th>
+					<th>Permissions</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in _roles)
+				{
+					<tr>
+						<td>@item.RoleID</td>
+						<td>@item.RoleName</td>
+						<td>
+							@foreach (var role in _rolePopupEditor.GetPermissions(item).Where(kv => kv.IsAssigned))
+							{
+								<div style="font-size:80%;font-weight:bold;">&bull; @role.PermissionName</div>
+							}
+						</td>
+						<td style="text-align: center">
+							@if (this.ShowLoadingSpinner(item.RoleID))
+							{
+								<Spinner Size="16" />
+							}
+							else
+							{
+								<img src="/icons/application_edit.png" style="cursor:pointer" @onclick="() => EditRole(item.RoleID)" />
+							}
+						</td>
+						<td>
+							@if (this.ShowDeletingSpinner(item.RoleID))
+							{
+								<Spinner Size="16" />
+							}
+							else
+							{
+								<img src="/icons/delete.png" style="cursor:pointer" @onclick="() => DeleteRole(item.RoleID)" />
+							}
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+<RolePopupEditor @ref="_rolePopupEditor" />
+<AlertDialog @ref="_alert" />
+<ConfirmDialog @ref="_confirmDialog" />
+
+@code {
+	AlertDialog _alert;
+	ConfirmDialog _confirmDialog;
+	ICollection<tblRole> _roles;
+	int? _loadingRoleId;
+	int? _deletingRoleId;
+	RolePopupEditor _rolePopupEditor;
+
+	bool ShowLoadingSpinner(int roleId) => _loadingRoleId == roleId;
+
+	bool ShowDeletingSpinner(int roleId) => _deletingRoleId == roleId;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_roles = await Api.GetRolesAsync();
+		await base.OnInitializedAsync();
+	}
+
+	private async void AddRole()
+	{
+		tblRole roleDetails1 = new tblRole();
+		roleDetails1.RoleName = "New Role";
+		if (await _rolePopupEditor.ShowDialog(roleDetails1))
+		{
+			_roles.Add(roleDetails1);
+			_loadingRoleId = roleDetails1.RoleID;
+			this.StateHasChanged();
+
+			string json = System.Text.Json.JsonSerializer.Serialize(roleDetails1);
+			await Api.SaveRoleAsync(json);
+
+			// if current user is not admin any more, next call to api will return null and status 401 which will redirect to /login
+			_roles = await Api.GetRolesAsync();
+
+			_loadingRoleId = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private async void EditRole(int roleId)
+	{
+		_loadingRoleId = roleId;
+		tblRole roleDetails1 = await Api.GetRoleAsync(roleId);
+		_loadingRoleId = null;
+		this.StateHasChanged();
+		if (await _rolePopupEditor.ShowDialog(roleDetails1))
+		{
+			_loadingRoleId = roleDetails1.RoleID;
+			this.StateHasChanged();
+
+			string json = System.Text.Json.JsonSerializer.Serialize(roleDetails1);
+			if (await Api.SaveRoleAsync(json))
+			{
+				// if current user is not admin any more, next call to api will return null and status 401 which will redirect to /login
+				_roles = await Api.GetRolesAsync();
+			}
+
+			_loadingRoleId = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private async void DeleteRole(int roleId)
+	{
+		if (await _confirmDialog.ShowDialog(new string[] { "Deleting role.", null, "Are you sure?" }))
+		{
+			_deletingRoleId = roleId;
+			this.StateHasChanged();
+			try
+			{
+				if (await Api.DeleteRoleAsync(roleId))
+				{
+					_roles.Remove(_roles.Where(r => r.RoleID == roleId).First());
+				}
+			}
+			catch
+			{
+				await _alert.ShowDialog(new string[] { "Error!", null, "Role has references,", "it can't be deleted!" });
+			}
+
+			_deletingRoleId = null;
+			this.StateHasChanged();
+		}
+	}
+}
+

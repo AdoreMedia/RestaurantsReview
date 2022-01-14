@@ -1,0 +1,489 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NJsonSchema.CodeGeneration.TypeScript</name>
+    </assembly>
+    <members>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.DataConversionGenerator">
+            <summary>Generates data conversion code.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.DataConversionGenerator.RenderConvertToJavaScriptCode(NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters)">
+            <summary>Generates the code to convert a data object to the target class instances.</summary>
+            <returns>The generated code.</returns>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.DataConversionGenerator.RenderConvertToClassCode(NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters)">
+            <summary>Generates the code to convert a data object to the target class instances.</summary>
+            <returns>The generated code.</returns>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters">
+            <summary>The template parameters.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.Variable">
+            <summary>Gets the variable.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.Value">
+            <summary>Gets the value.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.Schema">
+            <summary>Gets the schema.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.IsPropertyNullable">
+            <summary>Gets a value indicating whether the property is nullable.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.CheckNewableObject">
+            <summary>Gets or sets a value indicating whether to check the newable data object for null.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.TypeNameHint">
+            <summary>Gets the type name hint.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.Resolver">
+            <summary>Gets the resolver.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.NullValue">
+            <summary>Gets or sets the null value.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.DataConversionParameters.Settings">
+            <summary>Gets or sets the settings.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel">
+            <summary>The TypeScript class template model.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.#ctor(System.String,System.String,NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings,NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver,NJsonSchema.JsonSchema,System.Object)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel" /> class.</summary>
+            <param name="typeName">The type name.</param>
+            <param name="discriminatorName">The name to compare the discriminator against.</param>
+            <param name="settings">The settings.</param>
+            <param name="resolver">The resolver.</param>
+            <param name="schema">The schema.</param>
+            <param name="rootObject">The root object.</param>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.ClassName">
+            <summary>Gets the class name.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.DiscriminatorName">
+            <summary>Gets the name for the discriminator check.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasDiscriminator">
+            <summary>Gets a value indicating whether the class has a discriminator property.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasBaseDiscriminator">
+            <summary>Gets a value indicating whether the class or an inherited class has a discriminator property.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.BaseDiscriminator">
+            <summary>Gets the class discriminator property name (may be defined in a inherited class).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasDescription">
+            <summary>Gets a value indicating whether the class has description.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.Description">
+            <summary>Gets the description.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasInheritance">
+            <summary>Gets a value indicating whether this class has a parent class.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.Inheritance">
+            <summary>Gets the inheritance code.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.InterfaceInheritance">
+            <summary>Gets the constructor interface inheritance code.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.BaseClass">
+            <summary>Gets the base class name.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.GenerateCloneMethod">
+            <summary>Gets or sets a value indicating whether a clone() method should be generated in the DTO classes.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.GenerateConstructorInterface">
+            <summary>Gets or sets a value indicating whether to generate an class interface which is used in the constructor to initialize the class (default: true).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.ConvertConstructorInterfaceData">
+            <summary>Gets or sets a value indicating whether POJO objects in the constructor data are converted to DTO instances (default: true).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.NullValue">
+            <summary>Gets the null value.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasIndexerProperty">
+            <summary>Gets a value indicating whether the class inherits from dictionary.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.IndexerPropertyValueType">
+            <summary>Gets the type of the indexer property value.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HandleReferences">
+            <summary>Gets a value indicating whether to handle JSON references.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasProperties">
+            <summary>Gets a value indicating whether the type has properties.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.Properties">
+            <summary>Gets the property models.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.HasDefaultValues">
+            <summary>Gets a value indicating whether any property has a default value.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.RequiresStrictPropertyInitialization">
+            <summary>Gets a value indicating whether </summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.ExportTypes">
+            <summary>Gets a value indicating whether the export keyword should be added to all classes.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel.InheritedSchema">
+            <summary>Gets the inherited schema.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel">
+            <summary>The TypeScript enum template model.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.#ctor(System.String,NJsonSchema.JsonSchema,NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel" /> class.</summary>
+            <param name="typeName">Name of the type.</param>
+            <param name="schema">The schema.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.Name">
+            <summary>Gets the name of the enum.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.HasDescription">
+            <summary>Gets a value indicating whether the enum has description.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.Description">
+            <summary>Gets the description.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.ExportTypes">
+            <summary>Gets a value indicating whether the export keyword should be added to all enums.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.ExtensionData">
+            <summary>Gets the property extension data.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.EnumTemplateModel.Enums">
+            <summary>Gets the enum values.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel">
+            <summary>The TypeScript file template model.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.#ctor(NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel"/> class.</summary>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.Types">
+            <summary>Gets or sets the code of all types.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.ExtensionCode">
+            <summary>Gets or sets the extension code.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.HasModuleName">
+            <summary>Gets or sets a value indicating whether the file has module name.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.ModuleName">
+            <summary>Gets or sets the name of the module.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.HasNamespace">
+            <summary>Gets or sets a value indicating whether the file has module name.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.Namespace">
+            <summary>Gets or sets the name of the module.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.FileTemplateModel.HandleReferences">
+            <summary>Gets a value indicating whether to handle JSON references.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel">
+            <summary>The TypeScript property template model.</summary>
+            <seealso cref="T:NJsonSchema.CodeGeneration.Models.PropertyModelBase" />
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.#ctor(NJsonSchema.CodeGeneration.TypeScript.Models.ClassTemplateModel,NJsonSchema.JsonSchemaProperty,System.String,NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver,NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel"/> class.</summary>
+            <param name="classTemplateModel">The class template model.</param>
+            <param name="property">The property.</param>
+            <param name="parentTypeName">Name of the parent type.</param>
+            <param name="typeResolver">The resolver.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.InterfaceName">
+            <summary>Gets the name of the property in an interface.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.HasDescription">
+            <summary>Gets a value indicating whether the property has description.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.Description">
+            <summary>Gets the description.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.Type">
+            <summary>Gets the type of the property.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.ConstructorInterfaceType">
+            <summary>Gets the type of the property in the initializer interface.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.SupportsConstructorConversion">
+            <summary>Gets a value indicating whether constructor conversion is supported.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.IsArray">
+            <summary>Gets a value indicating whether the property type is an array.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.IsDictionary">
+            <summary>Gets a value indicating whether the property type is a dictionary.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.ArrayItemType">
+            <summary>Gets the type of the array item.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.DictionaryItemType">
+            <summary>Gets the type of the dictionary item.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.TypePostfix">
+            <summary>Gets the type postfix (e.g. ' | null | undefined')</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.IsReadOnly">
+            <summary>Gets a value indicating whether the property is read only.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.IsOptional">
+            <summary>Gets a value indicating whether the property is optional.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.IsDiscriminator">
+            <summary>Gets a value indicating whether the property is an inheritance discriminator.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.ConvertToClassCode">
+            <summary>Gets the convert to class code.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.Models.PropertyModel.ConvertToJavaScriptCode">
+            <summary>Gets the convert to JavaScript code.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType">
+            <summary>Specifies the TypeScript date time type handling.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType.Date">
+            <summary>Uses the JavaScript Date object for date time handling.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType.MomentJS">
+            <summary>Uses the Moment.js for date time handling.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType.String">
+            <summary>Uses the strings for date time handling (no conversion).</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType.OffsetMomentJS">
+            <summary>Uses the Moment.js for date time with offset handling.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType.Luxon">
+            <summary>Uses Luxon for date time handling.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptDateTimeType.DayJS">
+            <summary>Uses the DayJS.js for date time handling.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle">
+            <summary>The TypeScript enum styles.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle.Enum">
+            <summary>Generates enum.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle.StringLiteral">
+            <summary>Generates enum as a string literal.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptExtensionCode">
+            <summary>Provides access to the extension code (used in TypeScript).</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptExtensionCode.#ctor(System.String,System.String[],System.String[])">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.ExtensionCode" /> class.</summary>
+            <param name="code">The code.</param>
+            <param name="extendedClasses">The extended classes.</param>
+            <param name="baseClasses">The base classes.</param>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator">
+            <summary>The TypeScript interface and enum code generator. </summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.#ctor(NJsonSchema.JsonSchema)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator"/> class.</summary>
+            <param name="schema">The schema.</param>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.#ctor(System.Object,NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator"/> class.</summary>
+            <param name="rootObject">The root object to search for all JSON Schemas.</param>
+            <param name="settings">The generator settings.</param>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.#ctor(System.Object,NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings,NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator" /> class.</summary>
+            <param name="rootObject">The root object to search for all JSON Schemas.</param>
+            <param name="settings">The generator settings.</param>
+            <param name="resolver">The resolver.</param>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.Settings">
+            <summary>Gets the generator settings.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.GenerateTypes">
+            <summary>Generates all types from the resolver with extension code from the settings.</summary>
+            <returns>The code.</returns>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.GenerateTypes(NJsonSchema.CodeGeneration.TypeScript.TypeScriptExtensionCode)">
+            <summary>Generates all types from the resolver with the given extension code.</summary>
+            <returns>The code.</returns>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.GenerateFile(System.Collections.Generic.IEnumerable{NJsonSchema.CodeGeneration.CodeArtifact})">
+            <summary>Generates the file.</summary>
+            <returns>The file contents.</returns>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGenerator.GenerateType(NJsonSchema.JsonSchema,System.String)">
+            <summary>Generates the type.</summary>
+            <param name="schema">The schema.</param>
+            <param name="typeNameHint">The fallback type name.</param>
+            <returns>The code.</returns>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings">
+            <summary>The generator settings.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings"/> class.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.TypeScriptVersion">
+            <summary>Gets or sets the target TypeScript version (default: 2.7).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.SupportsStrictNullChecks">
+            <summary>Gets a value indicating whether the target TypeScript version supports strict null checks.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.MarkOptionalProperties">
+            <summary>Gets or sets a value indicating whether to mark optional properties with ? (default: false).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.TypeStyle">
+            <summary>Gets or sets the type style (default: Class).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.DateTimeType">
+            <summary>Gets or sets the date time type (default: 'Date').</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.EnumStyle">
+            <summary>Gets or sets the enum style (default: Enum).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.UseLeafType">
+            <summary>Generate leaf types for an object with discriminator (default: false).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ModuleName">
+            <summary>Gets or sets the TypeScript module name (default: '', no module).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.Namespace">
+            <summary>Gets or sets the TypeScript namespace (default: '', no namespace).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ExtendedClasses">
+            <summary>Gets or sets the list of extended classes (the classes must be implemented in the <see cref="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ExtensionCode"/>).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ExtensionCode">
+            <summary>Gets or sets the extension code to append to the generated code.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ClassTypes">
+            <summary>Gets or sets the type names which always generate plain TypeScript classes.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.NullValue">
+            <summary>Gets or sets the TypeScript null value.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.HandleReferences">
+            <summary>Gets or sets a value indicating whether to handle JSON references (supports $ref, $id, $values, default: false).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.GenerateCloneMethod">
+            <summary>Gets or sets a value indicating whether a clone() method should be generated in the DTO classes.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.GenerateConstructorInterface">
+            <summary>Gets or sets a value indicating whether to generate an class interface which is used in the constructor to initialize the class (default: true).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ConvertConstructorInterfaceData">
+            <summary>Gets or sets a value indicating whether POJO objects in the constructor data are converted to DTO instances (GenerateConstructorInterface must be enabled, default: false).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.ExportTypes">
+            <summary>Gets or sets a value indicating whether the export keyword should be added to all classes and enums (default: true).</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.InlineNamedDictionaries">
+            <summary>Gets or sets a value indicating whether named/referenced dictionaries should be inlined or generated as class with an indexer.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings.GetTypeStyle(System.String)">
+            <summary>Gets the type style of the given type name.</summary>
+            <param name="typeName">The type name.</param>
+            <returns>The type style.</returns>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptNullValue">
+            <summary>The TypeScript null value used in object initializers.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptNullValue.Null">
+            <summary>JavaScript null.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptNullValue.Undefined">
+            <summary>JavaScript undefined.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptPropertyNameGenerator">
+            <summary>Generates the property name for a given TypeScript <see cref="T:NJsonSchema.JsonSchemaProperty"/>.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptPropertyNameGenerator.ReservedPropertyNames">
+            <summary>Gets or sets the reserved names.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptPropertyNameGenerator.Generate(NJsonSchema.JsonSchemaProperty)">
+            <summary>Generates the property name.</summary>
+            <param name="property">The property.</param>
+            <returns>The new name.</returns>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver">
+            <summary>Manages the generated types and converts JSON types to TypeScript types. </summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.#ctor(NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver" /> class.</summary>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.Settings">
+            <summary>Gets the generator settings.</summary>
+        </member>
+        <member name="P:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.Namespace">
+            <summary>Gets or sets the namespace of the generated classes.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.ResolveConstructorInterfaceName(NJsonSchema.JsonSchema,System.Boolean,System.String)">
+            <summary>Resolves and possibly generates the specified schema. Returns the type name with a 'I' prefix if the feature is supported for the given schema.</summary>
+            <param name="schema">The schema.</param>
+            <param name="isNullable">Specifies whether the given type usage is nullable.</param>
+            <param name="typeNameHint">The type name hint to use when generating the type and the type name is missing.</param>
+            <returns>The type name.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="schema"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.Resolve(NJsonSchema.JsonSchema,System.Boolean,System.String)">
+            <summary>Resolves and possibly generates the specified schema.</summary>
+            <param name="schema">The schema.</param>
+            <param name="isNullable">Specifies whether the given type usage is nullable.</param>
+            <param name="typeNameHint">The type name hint to use when generating the type and the type name is missing.</param>
+            <returns>The type name.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="schema"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.SupportsConstructorConversion(NJsonSchema.JsonSchema)">
+            <summary>Gets a value indicating whether the schema supports constructor conversion.</summary>
+            <param name="schema">The schema.</param>
+            <returns>The result.</returns>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeResolver.IsDefinitionTypeSchema(NJsonSchema.JsonSchema)">
+            <summary>Checks whether the given schema should generate a type.</summary>
+            <param name="schema">The schema.</param>
+            <returns>True if the schema should generate a type.</returns>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle">
+            <summary>The TypeScript type styles.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.Interface">
+            <summary>Generates interfaces which can add typings to existing JSON.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.Class">
+            <summary>Generates classes which can be constructed from JSON.</summary>
+        </member>
+        <member name="F:NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.KnockoutClass">
+            <summary>Generates classes with KnockoutJS observable properties.</summary>
+        </member>
+        <member name="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptValueGenerator">
+            <summary>Converts the default value to a TypeScript identifier.</summary>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptValueGenerator.#ctor(NJsonSchema.CodeGeneration.TypeScript.TypeScriptGeneratorSettings)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.CodeGeneration.TypeScript.TypeScriptValueGenerator"/> class.</summary>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptValueGenerator.GetDefaultValue(NJsonSchema.JsonSchema,System.Boolean,System.String,System.String,System.Boolean,NJsonSchema.CodeGeneration.TypeResolverBase)">
+            <summary>Gets the default value code.</summary>
+            <param name="schema">The schema.</param>
+            <param name="allowsNull">Specifies whether the default value assignment also allows null.</param>
+            <param name="targetType">The type of the target.</param>
+            <param name="typeNameHint">The type name hint to use when generating the type and the type name is missing.</param>
+            <param name="useSchemaDefault">if set to <c>true</c> uses the default value from the schema if available.</param>
+            <param name="typeResolver">The type resolver.</param>
+            <returns>The code.</returns>
+        </member>
+        <member name="M:NJsonSchema.CodeGeneration.TypeScript.TypeScriptValueGenerator.GetNumericValue(NJsonSchema.JsonObjectType,System.Object,System.String)">
+            <summary>Converts the default value to a TypeScript number literal. </summary>
+            <param name="type">The JSON type.</param>
+            <param name="value">The value to convert.</param>
+            <param name="format">Optional schema format</param>
+            <returns>The TypeScript number literal.</returns>
+        </member>
+    </members>
+</doc>

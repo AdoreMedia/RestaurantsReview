@@ -1,0 +1,26 @@
+﻿@if (IsVisible)
+{
+<div style="display:inline-block;width:@(Size)px;height:@(Size)px;margin:@(Padding)px;">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" x="448" y="0">
+		<circle cx="16" cy="64" r="16" fill="rgb(0,0,0)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.1)" transform="rotate(45, 64, 64)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.2)" transform="rotate(90,64,64)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.35)" transform="rotate(135,64,64)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.5)" transform="rotate(180,64,64)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.7)" transform="rotate(225,64,64)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.8)" transform="rotate(270,64,64)" />
+		<circle cx="16" cy="64" r="16" fill="rgba(0,0,0,0.9)" transform="rotate(315,64,64)" />
+		<animateTransform attributeName="transform" type="rotate" calcMode="discrete" values="0 0 0; 45 0 0; 90 0 0; 135 0 0; 180 0 0; 225 0 0 ; 270 0 0; 315 0 0; 360 0 0" keyTimes="0;0.125;0.25;0.375;0.5;0.625;0.75;0.875;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform>
+	</svg>
+</div>
+}
+@code{
+	[Parameter]
+	public int Size { get; set; } = 20;
+
+	[Parameter]
+	public bool IsVisible { get; set; } = true;
+
+	[Parameter]
+	public int Padding { get; set; } = 0;
+}

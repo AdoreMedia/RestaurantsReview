@@ -1,0 +1,376 @@
+﻿@page "/"
+@inject RestaurantsReviewClient Api
+@inject AppModel App
+@inject BrowserContext Browser
+
+<h3>Reviews</h3>
+
+@if (_restaurants == null)
+{
+	<Spinner Size="30" />
+}
+else if (!_restaurants.Any())
+{
+	<p>No restaurants yet</p>
+}
+else
+{
+	<div style="padding: 10px; background: gainsboro; margin-bottom: 20px; max-width: 800px;border:solid 1px gray;">
+		<div style="font-weight:bold">Debug info: @App.User.FirstName @App.User.LastName</div>
+		<div>Roles: @string.Join(", ", App.GetAssignedRoles())</div>
+		<div>
+			Permissions:
+			@foreach (string permission in App.GetAssignedPermissions())
+			{
+				<div>&bull; @permission</div>
+			}
+		</div>
+	</div>
+
+	@foreach (var model in _restaurants)
+	{
+		<div class="restaurantItem1">
+			<div class="overview1">
+				<div class="logo1" style="background-image: url('/images/restaurant/restaurant@(model.Restaurant.RestaurantID % 5).jpg')"></div>
+				<div class="content1">
+					@if (App.HasPermission(o => o.CanReplayToRestaurantReview) && model.Restaurant.NewUnrepliedReviews > 0)
+					{
+						<div style="float:right">
+							<button class="btn btn-outline-warning btn-sm" @onclick="model.ToggleDetails">
+								New reviews: @(model.Restaurant.NewUnrepliedReviews)
+							</button>
+						</div>
+					}
+					<h2>@model.Restaurant.Name</h2>
+					<div class="reviewContainer">
+						@if (_savingReviewToRestaurantID == model.Restaurant.RestaurantID)
+						{
+							<Spinner Size="20" />
+						}
+						else if (model.Restaurant.ReviewsCount > 0)
+						{
+							<StarRating AverageRating="model.Restaurant.AverageRating" />
+							<span> &bull; </span>
+							<span>@model.Restaurant.AverageRating?.ToString("n2")</span>
+							<span> &bull; </span>
+							<a href="javascript:false" class="addReview" style="font-weight:bold"
+							   @onclick="model.ToggleDetails"><span>@model.Restaurant.ReviewsCount review(s)</span></a>
+							@if (App.HasPermission(o => o.CanWriteReview))
+							{
+								<span> &bull; </span>
+								<a href="javascript:false" class="addReview" @onclick="() => ShowReviewPopupEditor(model.Restaurant.RestaurantID)">Add review</a>
+							}
+						}
+						else if (App.HasPermission(o => o.CanWriteReview))
+						{
+							<a href="javascript:false" class="addReview" @onclick="() => ShowReviewPopupEditor(model.Restaurant.RestaurantID)">Let's add the first review!</a>
+						}
+					</div>
+					<h5>@model.Restaurant.Address</h5>
+					<h4>@model.Restaurant.Description</h4>
+					<h5>@model.Restaurant.OwnerFullName as owner</h5>
+					<div style="text-align:right;position:absolute;right:20px; bottom:10px;">
+						<Spinner Size="20" IsVisible="model.IsDetailsLoading" />
+					</div>
+				</div>
+			</div>
+			<div class="details1" style="@model.DetailsStyle">
+				<div class="details2" id="@model.DetailEementId">
+					@if (model.Reviews?.Any() == true)
+					{
+						ReviewExtended lowest = model.Reviews?.OrderBy(o => o.RatingStars).FirstOrDefault();
+						ReviewExtended highest = model.Reviews?.OrderByDescending(o => o.RatingStars).FirstOrDefault();
+
+						@if (lowest != null && highest != null)
+						{
+							<div class="singleReview1" style="background:#fbdefa;border-bottom:none;">
+								<b>Average</b>
+								<div><StarRating AverageRating="@model.Restaurant.AverageRating" /> &bull; @model.Restaurant.AverageRating?.ToString("n2")</div>
+
+								<b>Lowest</b>
+								<div><StarRating AverageRating="@lowest.RatingStars" /> &bull; @lowest.RatingStars?.ToString() &bull; @lowest.Reviever.FirstName @lowest.Reviever.LastName @@ @lowest.CreationDate</div>
+
+								<b>Highest</b>
+								<div><StarRating AverageRating="@highest.RatingStars" /> &bull; @highest.RatingStars?.ToString() &bull; @highest.Reviever.FirstName @highest.Reviever.LastName @@ @highest.CreationDate</div>
+							</div>
+						}
+
+						@foreach (ReviewExtended review in model.Reviews)
+						{
+							<div class="singleReview1">
+								<div>@review.Reviever.FirstName @review.Reviever.LastName @@ @review.CreationDate</div>
+								<div style="padding:5px 0;"><StarRating AverageRating="@review.RatingStars" /></div>
+								<div>@review.Comment</div>
+								@if (App.HasPermission(o => o.CanEditRestaurantReview))
+								{
+									<div style="padding:5px 0;">
+										<img style="cursor:pointer" src="/icons/page_edit.png" @onclick="()=>EditReview(review)" />
+										<img style="cursor:pointer" src="/icons/delete.png" @onclick="()=>DeleteReview(review)" />
+									</div>
+								}
+								@if (review.Replay?.ReplyText != null)
+								{
+									<div style="text-align:right;">
+										<div>@review.Replay.Replyer?.FirstName @review.Replay.Replyer?.LastName @@ @review.Replay.CreationDate</div>
+										<div>@review.Replay.ReplyText</div>
+										@if (App.HasPermission(o => o.CanEditReplayToRestaurantReview))
+										{
+											<div style="padding:5px 0;">
+												<img style="cursor:pointer" src="/icons/page_edit.png" @onclick="()=>EditReviewReply(review)" />
+												<img style="cursor:pointer" src="/icons/delete.png" @onclick="()=>DeleteReviewReply(review)" />
+											</div>
+										}
+									</div>
+								}
+								else if (App.HasPermission(o => o.CanReplayToRestaurantReview))
+								{
+									<div style="text-align:right;">
+										@if (_savingReplayToReviewID == review.ReviewID)
+										{
+											<Spinner Size="20" />
+										}
+										else
+										{
+											<button class="btn btn-primary btn-sm" @onclick="() => ShowReplyPopupEditor(review, model.Restaurant)">Reply</button>
+										}
+									</div>
+								}
+							</div>
+						}
+					}
+				</div>
+			</div>
+		</div>
+	}
+}
+
+<ReviewPopupEditor @ref="_reviewPopupEditor" />
+<ReplyPopupEditor @ref="_replyPopupEditor" />
+<AlertDialog @ref="_alert" />
+<ConfirmDialog @ref="_confirmDialog" />
+
+@code {
+	class RestaurantViewModel
+	{
+		public readonly string DetailEementId = Guid.NewGuid().ToString();
+		public bool IsDetailsLoading { get; private set; }
+		public string DetailsStyle => _isDetailsExpanded ? $"opacity:1; height:{(_elementHeight.HasValue ? _elementHeight + "px" : "auto")};" : $"opacity:0; height:0;";
+		public RestaurantExtendedResult Restaurant { get; private set; }
+		public List<ReviewExtended> Reviews { get; private set; }
+		ReviewsPage _page;
+		RestaurantsReviewClient _api;
+		BrowserContext _browser;
+		int? _elementHeight;
+		private bool _isDetailsExpanded;
+
+		public RestaurantViewModel(RestaurantExtendedResult res, ReviewsPage page, RestaurantsReviewClient api, BrowserContext browser)
+		{
+			Restaurant = res;
+			_page = page;
+			_api = api;
+			_browser = browser;
+		}
+
+		public async void ToggleDetails()
+		{
+			if (this.Reviews == null)
+			{
+				await this.ReloadReviewsAsync();
+				_page.StateHasChanged();
+				await Task.Delay(10); // wait for DOM to refresh
+			}
+
+			var el = await _browser.GetElementByIdAsync(this.DetailEementId);
+			_elementHeight = el.offsetHeight;
+			_page.StateHasChanged();
+			await Task.Delay(10); // wait for DOM to refresh
+
+			if (_isDetailsExpanded)
+			{
+				_isDetailsExpanded = false;
+			}
+			else
+			{
+				_isDetailsExpanded = true;
+				_page.StateHasChanged();
+
+				await Task.Delay(400); // wait for animation to complete
+				_elementHeight = null;
+			}
+
+			_page.StateHasChanged();
+		}
+
+		public async Task ReloadReviewsAsync()
+		{
+			this.IsDetailsLoading = true;
+			_page.StateHasChanged();
+
+			this.Reviews = (await _api.GetRestaurantReviewsAsync(this.Restaurant.RestaurantID)).ToList();
+
+			this.IsDetailsLoading = false;
+			_page.StateHasChanged();
+		}
+
+		public async Task ReplaceRestaurantAsync(RestaurantExtendedResult res)
+		{
+			this.Restaurant = res;
+			await this.ReloadReviewsAsync();
+			_page.StateHasChanged();
+		}
+	}
+
+	AlertDialog _alert;
+	ConfirmDialog _confirmDialog;
+	List<RestaurantViewModel> _restaurants;
+	int? _savingReviewToRestaurantID;
+	int? _savingReplayToReviewID;
+	ReviewPopupEditor _reviewPopupEditor;
+	ReplyPopupEditor _replyPopupEditor;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_restaurants = (await Api.GetRestaurantsAsync(0, 100)).Select(r => new RestaurantViewModel(r, this, Api, Browser)).ToList();
+		await base.OnInitializedAsync();
+	}
+
+	private RestaurantViewModel FindViewModel(int restaurantId)
+	{
+		return _restaurants.Where(o => o.Restaurant.RestaurantID == restaurantId).FirstOrDefault();
+	}
+
+	private async void ShowReviewPopupEditor(int restaurantId)
+	{
+		_reviewPopupEditor.Rating = null;
+		_reviewPopupEditor.Comment = null;
+		RestaurantViewModel model = _restaurants.Where(o => o.Restaurant.RestaurantID == restaurantId).First();
+		_reviewPopupEditor.RestaurantName = model.Restaurant.Name;
+
+		if (await _reviewPopupEditor.ShowDialog())
+		{
+			_savingReviewToRestaurantID = restaurantId;
+			this.StateHasChanged();
+
+			if (await Api.AddRestaurantReviewAsync(restaurantId, _reviewPopupEditor.Rating, _reviewPopupEditor.Comment))
+			{
+				RestaurantExtendedResult restaurant2 = await Api.GetSingleRestaurantAsync(restaurantId);
+				await FindViewModel(restaurant2.RestaurantID).ReplaceRestaurantAsync(restaurant2);
+			}
+
+			_savingReviewToRestaurantID = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private async void EditReview(ReviewExtended review)
+	{
+		_reviewPopupEditor.Rating = review.RatingStars;
+		_reviewPopupEditor.Comment = review.Comment;
+		RestaurantViewModel model = _restaurants.Where(o => o.Restaurant.RestaurantID == review.RestaurantID).First();
+		_reviewPopupEditor.RestaurantName = model.Restaurant.Name;
+
+		if (await _reviewPopupEditor.ShowDialog())
+		{
+			_savingReviewToRestaurantID = review.RestaurantID;
+			this.StateHasChanged();
+
+			if (await Api.UpdateRestaurantReviewAsync(review.ReviewID, _reviewPopupEditor.Rating, _reviewPopupEditor.Comment))
+			{
+				RestaurantExtendedResult restaurant2 = await Api.GetSingleRestaurantAsync(review.RestaurantID);
+				await FindViewModel(restaurant2.RestaurantID).ReplaceRestaurantAsync(restaurant2);
+			}
+
+			_savingReviewToRestaurantID = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private async void DeleteReview(ReviewExtended review)
+	{
+		if (await _confirmDialog.ShowDialog(new string[] { "Deleting Review.", null, "Are you sure?" }))
+		{
+			this.StateHasChanged();
+			try
+			{
+				if (await Api.DeleteRestaurantReviewAsync(review.ReviewID))
+				{
+					RestaurantExtendedResult restaurant2 = await Api.GetSingleRestaurantAsync(review.RestaurantID);
+					await FindViewModel(restaurant2.RestaurantID).ReplaceRestaurantAsync(restaurant2);
+				}
+			}
+			catch
+			{
+				await _alert.ShowDialog(new string[] { "Error!", null, "Review has references,", "it can't be deleted!" });
+			}
+
+			this.StateHasChanged();
+		}
+	}
+
+	private async void ShowReplyPopupEditor(ReviewExtended review, RestaurantExtendedResult restaurant)
+	{
+		_replyPopupEditor.Author = review.Reviever.FirstName + " " + review.Reviever.LastName;
+		_replyPopupEditor.ReviewDate = review.CreationDate;
+		_replyPopupEditor.Rating = review.RatingStars;
+		_replyPopupEditor.Comment = review.Comment;
+		_replyPopupEditor.ReplyText = null;
+
+		if (await _replyPopupEditor.ShowDialog() && !string.IsNullOrWhiteSpace(_replyPopupEditor.ReplyText))
+		{
+			_savingReplayToReviewID = review.ReviewID;
+			this.StateHasChanged();
+
+			if (await Api.AddReviewReplyAsync(review.ReviewID, _replyPopupEditor.ReplyText))
+			{
+				restaurant.NewUnrepliedReviews--;
+				await FindViewModel(restaurant.RestaurantID).ReloadReviewsAsync();
+				_savingReplayToReviewID = null;
+				this.StateHasChanged();
+			}
+		}
+	}
+
+	private async void EditReviewReply(ReviewExtended review)
+	{
+		_replyPopupEditor.Author = review.Reviever.FirstName + " " + review.Reviever.LastName;
+		_replyPopupEditor.ReviewDate = review.CreationDate;
+		_replyPopupEditor.Rating = review.RatingStars;
+		_replyPopupEditor.Comment = review.Comment;
+		_replyPopupEditor.ReplyText = review.Replay.ReplyText;
+
+		if (await _replyPopupEditor.ShowDialog() && !string.IsNullOrWhiteSpace(_replyPopupEditor.ReplyText))
+		{
+			_savingReplayToReviewID = review.ReviewID;
+			this.StateHasChanged();
+
+			if (await Api.UpdateReviewReplyAsync(review.ReviewID, _replyPopupEditor.ReplyText))
+			{
+				await FindViewModel(review.RestaurantID).ReloadReviewsAsync();
+				_savingReplayToReviewID = null;
+				this.StateHasChanged();
+			}
+		}
+	}
+
+	private async void DeleteReviewReply(ReviewExtended review)
+	{
+		if (await _confirmDialog.ShowDialog(new string[] { "Deleting Replay to review.", null, "Are you sure?" }))
+		{
+			this.StateHasChanged();
+			try
+			{
+				if (await Api.DeleteReviewReplyAsync(review.ReviewID))
+				{
+					await FindViewModel(review.RestaurantID).ReloadReviewsAsync();
+				}
+			}
+			catch
+			{
+				await _alert.ShowDialog(new string[] { "Error!", null, "Replay to review has references,", "it can't be deleted!" });
+			}
+
+			this.StateHasChanged();
+		}
+	}
+}
+

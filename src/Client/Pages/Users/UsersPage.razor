@@ -1,0 +1,155 @@
+﻿@page "/users"
+@inject RestaurantsReviewClient Api
+@inject AppModel App
+
+<h3>Users</h3>
+
+@if (_members == null)
+{
+	<Spinner Size="30" />
+}
+else if (!_members.Any())
+{
+	<p>No users available</p>
+}
+else
+{
+	<table class="arizonaTable">
+		<thead>
+			<tr>
+				<th>MemberID</th>
+				<th>First name</th>
+				<th>Last name</th>
+				<th>E-mail</th>
+				<th>Username</th>
+				<th>Logins count</th>
+				<th>Roles</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in _members)
+			{
+				<tr>
+					<td>@item.MemberID</td>
+					<td>@item.FirstName</td>
+					<td>@item.LastName</td>
+					<td>@item.Email</td>
+					<td>@item.Username</td>
+					<td>@item.LoginsCount</td>
+					<td>
+						@foreach (var role in item.Roles.Where(r => r.IsAssigned))
+						{
+							<div style="font-size:80%;font-weight:bold;">&bull; @role.RoleName</div>
+						}
+					</td>
+					<td style="text-align: center">
+						@if (this.ShowLoadingSpinner(item.MemberID))
+						{
+							<Spinner Size="16" />
+						}
+						else
+						{
+							<img src="/icons/application_edit.png" style="cursor:pointer" @onclick="() => EditUser(item.MemberID)" />
+						}
+					</td>
+					<td>
+						@if (this.ShowDeletingSpinner(item.MemberID))
+						{
+							<Spinner Size="16" />
+						}
+						else
+						{
+							<img src="/icons/delete.png" style="cursor:pointer" @onclick="() => DeleteUser(item.MemberID)" />
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+<UserPopupEditor @ref="_userPopupEditor" />
+<AlertDialog @ref="_alert" />
+<ConfirmDialog @ref="_confirm" />
+
+@code {
+	AlertDialog _alert;
+	ConfirmDialog _confirm;
+	ICollection<MembersResult> _members;
+	int? _loadingMemberId;
+	int? _deletingMemberId;
+	UserPopupEditor _userPopupEditor;
+
+	bool ShowLoadingSpinner(int memberId) => _loadingMemberId == memberId;
+
+	bool ShowDeletingSpinner(int memberId) => _deletingMemberId == memberId;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_members = await Api.GetMembersWithRolesAsync(true, 0, 100);
+		await base.OnInitializedAsync();
+	}
+
+	private async void EditUser(int memberId)
+	{
+		_loadingMemberId = memberId;
+		MembersResult memberDetails1 = await Api.GetMemberDetailsAsync(memberId);
+		_loadingMemberId = null;
+		this.StateHasChanged();
+		if (await _userPopupEditor.ShowDialog(memberDetails1))
+		{
+			_loadingMemberId = memberDetails1.MemberID;
+			this.StateHasChanged();
+
+			var assignedRoles = memberDetails1.Roles.Where(o => o.IsAssigned).Select(o => o.RoleID).ToList();
+			if (await Api.SaveMemberRolesAsync(memberDetails1.MemberID, string.Join(",", assignedRoles)))
+			{
+				// if current user is not admin any more, next call to api will return null and status 401 which will redirect to /login
+				MembersResult freshMemberData = await Api.GetMemberDetailsAsync(memberDetails1.MemberID);
+				if (freshMemberData != null)
+				{
+					_members = ReplaceMember(_members, freshMemberData).ToList();
+				}
+			}
+
+			_loadingMemberId = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private IEnumerable<MembersResult> ReplaceMember(ICollection<MembersResult> list1, MembersResult member1)
+	{
+		foreach (var mem in list1)
+		{
+			if (mem.MemberID == member1.MemberID)
+				yield return member1;
+			else
+				yield return mem;
+		}
+	}
+
+	private async void DeleteUser(int memberId)
+	{
+		if (await _confirm.ShowDialog(new string[] { "Deleting user.", null, "Are you sure?" }))
+		{
+			_deletingMemberId = memberId;
+			this.StateHasChanged();
+			try
+			{
+				if (await Api.DeleteMemberAsync(memberId))
+				{
+					_members.Remove(_members.Where(m => m.MemberID == memberId).First());
+				}
+			}
+			catch
+			{
+				await _alert.ShowDialog(new string[] { "Error!", null, "User has references,", "it can't be deleted!" });
+			}
+			_deletingMemberId = null;
+			this.StateHasChanged();
+		}
+	}
+}
+

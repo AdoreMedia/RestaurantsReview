@@ -1,0 +1,186 @@
+﻿@page "/restaurants"
+@inject RestaurantsReviewClient Api
+@inject AppModel App
+
+<h3>Restaurants</h3>
+
+@if (_restaurants != null)
+{
+	@if (App.HasPermission(o => o.CanCreateRestaurant))
+	{
+		<div style="display:inline-block;">
+			<div style="margin-bottom: 5px;">
+				<button class="btn btn-primary btn-sm" @onclick="AddRestaurant">
+					<img src="/icons/add.png" style="cursor:pointer;" />
+					Add Restaurant
+				</button>
+			</div>
+		</div>
+	}
+}
+
+@if (_restaurants == null)
+{
+	<Spinner Size="30" />
+}
+else if (!_restaurants.Any())
+{
+	<p>No restaurants yet</p>
+}
+else
+{
+	<table class="arizonaTable">
+		<thead>
+			<tr>
+				<th>RestaurantID</th>
+				<th>Restaurant name</th>
+				<th>Address</th>
+				<th>Description</th>
+				<th>Reviews</th>
+				<th>Rating</th>
+				@if (App.HasRole(RoleEnum.Admin))
+				{
+					<th>Owner</th>
+				}
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in _restaurants)
+			{
+				<tr>
+					<td>@item.RestaurantID</td>
+					<td>@item.Name</td>
+					<td>@item.Address</td>
+					<td><div style="max-width:200px;">@item.Description</div></td>
+					<td>@item.ReviewsCount</td>
+					<td>@item.AverageRating?.ToString("n2")</td>
+					@if (App.HasRole(RoleEnum.Admin))
+					{
+						<td>@($"{item.OwnerMemberID} - {item.OwnerFullName}")</td>
+					}
+					<td style="text-align: center">
+						@if (this.ShowLoadingSpinner(item.RestaurantID))
+						{
+							<Spinner Size="16" />
+						}
+						else
+						{
+							<img src="/icons/application_edit.png" style="cursor:pointer" @onclick="() => EditRestaurant(item.RestaurantID)" />
+						}
+					</td>
+					<td>
+						@if (this.ShowDeletingSpinner(item.RestaurantID))
+						{
+							<Spinner Size="16" />
+						}
+						else
+						{
+							<img src="/icons/delete.png" style="cursor:pointer" @onclick="() => DeleteRestaurant(item.RestaurantID)" />
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+<RestaurantPopupEditor @ref="_restaurantPopupEditor" />
+<AlertDialog @ref="_alert" />
+<ConfirmDialog @ref="_confirm" />
+
+@code {
+	AlertDialog _alert;
+	ConfirmDialog _confirm;
+	List<RestaurantExtendedResult> _restaurants;
+	int? _loadingRestaurantId;
+	int? _deletingRestaurantId;
+	RestaurantPopupEditor _restaurantPopupEditor;
+	RestaurantExtendedResult _restaurantDetails;
+
+	bool ShowLoadingSpinner(int roleId) => _loadingRestaurantId == roleId;
+
+	bool ShowDeletingSpinner(int roleId) => _deletingRestaurantId == roleId;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_restaurants = (await Api.GetRestaurantsAsync(0, 100)).ToList();
+		await base.OnInitializedAsync();
+	}
+
+	private async void AddRestaurant()
+	{
+		RestaurantExtendedResult restaurant = new RestaurantExtendedResult();
+		restaurant.Name = "New Restaurant";
+		if (await _restaurantPopupEditor.ShowDialog(restaurant))
+		{
+			_restaurants.Insert(0, restaurant);
+			_loadingRestaurantId = restaurant.RestaurantID;
+			this.StateHasChanged();
+
+			int restaurantId = await Api.CreateNewRestaurantAsync(restaurant.Name, restaurant.Address, restaurant.Description);
+			RestaurantExtendedResult res2 = await Api.GetSingleRestaurantAsync(restaurantId);
+			_restaurants.RemoveAt(0);
+			_restaurants.Insert(0, res2);
+
+			_loadingRestaurantId = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private IEnumerable<RestaurantExtendedResult> ReplaceRestaurant(ICollection<RestaurantExtendedResult> list1, RestaurantExtendedResult newItem)
+	{
+		foreach (var item in list1)
+		{
+			if (item.RestaurantID == newItem.RestaurantID)
+				yield return newItem;
+			else
+				yield return item;
+		}
+	}
+
+	private async void EditRestaurant(int restaurantId)
+	{
+		_restaurantDetails = _restaurants.Where(o => o.RestaurantID == restaurantId).First();
+
+		if (await _restaurantPopupEditor.ShowDialog(_restaurantDetails))
+		{
+			_loadingRestaurantId = _restaurantDetails.RestaurantID;
+			this.StateHasChanged();
+
+			if (await Api.SaveRestaurantAsync(_restaurantDetails.RestaurantID, _restaurantDetails.Name, _restaurantDetails.Address, _restaurantDetails.Description))
+			{
+				RestaurantExtendedResult res2 = await Api.GetSingleRestaurantAsync(restaurantId);
+				_restaurants = ReplaceRestaurant(_restaurants, res2).ToList();
+			}
+
+			_loadingRestaurantId = null;
+			this.StateHasChanged();
+		}
+	}
+
+	private async void DeleteRestaurant(int restaurantId)
+	{
+		if (await _confirm.ShowDialog(new string[] { "Deleting restaurant.", null, "Are you sure?" }))
+		{
+			_deletingRestaurantId = restaurantId;
+			this.StateHasChanged();
+			try
+			{
+				if (await Api.DeleteRestaurantAsync(restaurantId))
+				{
+					_restaurants.Remove(_restaurants.Where(o => o.RestaurantID == restaurantId).First());
+				}
+			}
+			catch
+			{
+				await _alert.ShowDialog(new string[] { "Error!", null, "Restaurant has references,", "it can't be deleted!" });
+			}
+
+			_deletingRestaurantId = null;
+			this.StateHasChanged();
+		}
+	}
+}
+

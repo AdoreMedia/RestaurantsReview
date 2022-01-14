@@ -1,0 +1,15 @@
+.page {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: #5a6268;
+}
+
+.main {
+	flex: 1;
+	min-height: 100vh;
+}
+
+.content {
+	margin-top: 10vh;
+}

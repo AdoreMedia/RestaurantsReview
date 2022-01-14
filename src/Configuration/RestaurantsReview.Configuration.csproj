@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>RestaurantsReview.Configuration</RootNamespace>
+    <ApplicationIcon />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Calysto.EntityFrameworkCore">
+      <HintPath>Dlls\Calysto.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Calysto.Genesis">
+      <HintPath>Dlls\Calysto.Genesis.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

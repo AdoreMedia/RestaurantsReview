@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+    <RootNamespace>RestaurantsReview.Database</RootNamespace>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Configuration\RestaurantsReview.Configuration.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="Calysto.EntityFrameworkCore">
+	    <HintPath>..\Configuration\Dlls\Calysto.EntityFrameworkCore.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Calysto.Genesis">
+	    <HintPath>..\Configuration\Dlls\Calysto.Genesis.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+</Project>

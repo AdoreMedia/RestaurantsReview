@@ -1,0 +1,89 @@
+﻿@inject BrowserContext Browser
+@implements IDisposable
+
+@if (_isVisible)
+{
+	<div class="calysto-modal-dialog">
+		<div class="dialog1 @AnimatedClass">
+			<div class="mask1 @AnimatedClass" @onclick="MaskClicked"></div>
+			<div class="container1">
+				<div class="mask1 @AnimatedClass" @onclick="MaskClicked"></div>
+				<div class="content1">
+					@ChildContent
+				</div>
+				<div class="mask1 @AnimatedClass" @onclick="MaskClicked"></div>
+			</div>
+			<div class="mask1 @AnimatedClass" @onclick="MaskClicked"></div>
+		</div>
+	</div>
+}
+
+@code {
+	private TaskCompletionSource _closePendingTask;
+	bool _isVisible;
+	bool _showAnimated;
+	string AnimatedClass => _showAnimated ? "show1" : "";
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	private async Task MaskClicked()
+	{
+		await HideModalDialog();
+	}
+
+	public async Task HideModalDialog()
+	{
+		_closePendingTask.TrySetResult();
+		_showAnimated = false;
+		this.StateHasChanged();
+		await Task.Delay(300);
+		_isVisible = false;
+		this.StateHasChanged();
+	}
+
+	bool _isDisposed;
+
+	public void Dispose()
+	{
+		_isDisposed = true;
+	}
+
+	bool _isWaitingForKey;
+
+	private async void StartWaitForEscKeyAsync()
+	{
+		if (_isWaitingForKey)
+			return;
+
+		while (!_isDisposed && _isVisible)
+		{
+			_isWaitingForKey = true;
+			var arg = await Browser.WaitForKeyboardEventAsync("keydown");
+			_isWaitingForKey = false;
+
+			if (_isDisposed || !_isVisible)
+			{
+				return;
+			}
+			else if (arg.Key == "Escape")
+			{
+				await this.HideModalDialog();
+				return;
+			}
+		}
+	}
+
+	public async Task ShowModalDialog()
+	{
+		_closePendingTask = new TaskCompletionSource();
+		_isVisible = true;
+		StartWaitForEscKeyAsync();
+
+		this.StateHasChanged();
+		await Task.Delay(10);
+		_showAnimated = true;
+		this.StateHasChanged();
+		await _closePendingTask.Task;
+	}
+}

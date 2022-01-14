@@ -1,0 +1,86 @@
+﻿@page "/login"
+@layout LiteLayout
+@using Models
+@inject AppModel App
+@inject NavigationManager Navigation
+<div class="loginForm">
+	<EditForm EditContext="@_editContext">
+		<DataAnnotationsValidator />
+
+		<div class="company1">Restaurants Review</div>
+		<div class="title1">Please sign-in</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.Username))</label>
+			<InputText class="input1" @bind-Value="_formModel.Username"></InputText>
+			<ValidationMessage For="()=>_formModel.Username" />
+		</div>
+
+		<div class="formItem">
+			<label class="label1">@_formModel.GetDisplayName(nameof(this._formModel.Password))</label>
+			<InputText type="password" class="input1" @bind-Value="_formModel.Password"></InputText>
+			<ValidationMessage For="()=>_formModel.Password" />
+		</div>
+
+		<div style="color:@(_response?.IsError == true ? "red" : "green")">@_response?.Message</div>
+
+		<div class="formItem">
+			<button disabled="@_isLoading" @onclick="UserLogin" class="button1">
+				Login
+				<Spinner IsVisible="@_isLoading" />
+			</button>
+		</div>
+
+		<div class="bottomLink">
+			<a href="/register">You don't have an account?</a>
+		</div>
+
+	</EditForm>
+</div>
+
+@code {
+	MessageItem _response;
+	bool _isLoading;
+	EditContext _editContext;
+	ValidationMessageStore _messageStore;
+	LoginFormModel _formModel = new LoginFormModel();
+
+	protected override void OnInitialized()
+	{
+		_editContext = new EditContext(this._formModel);
+		_messageStore = new ValidationMessageStore(this._editContext);
+		_editContext.OnFieldChanged += (s, e) => _messageStore.Clear(e.FieldIdentifier);
+	}
+
+	private async void UserLogin()
+	{
+		if (_editContext.Validate())
+		{
+			Console.WriteLine("Valid form");
+			_isLoading = true;
+
+			_response = null;
+			this.StateHasChanged();
+
+			_response = await App.LoginUserAsync(_formModel.Username, _formModel.Password);
+
+			this.StateHasChanged();
+
+			if (_response.IsError)
+			{
+				_isLoading = false;
+			}
+			else
+			{
+				await Task.Delay(1000);
+				Navigation.NavigateTo("/reviews");
+			}
+
+			this.StateHasChanged();
+		}
+		else
+		{
+			Console.WriteLine("Invalid form");
+		}
+	}
+}

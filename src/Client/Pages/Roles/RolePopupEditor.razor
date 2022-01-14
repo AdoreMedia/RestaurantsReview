@@ -1,0 +1,87 @@
+﻿<ModalDialog @ref="_modalDialog">
+	<div class="alert-dialog" style="min-width:400px;">
+		<div class="alert-title">
+			@*<div class="title-text">Role editor</div>*@
+			@*<div class="close-button" @onclick="() => CloseDialog(false)">x</div>*@
+		</div>
+		<div class="alert-content">
+			<div>
+				<div class="arizonaTableTitle">Role editor</div>
+				<table class="arizonaTable" style="width:100%;text-align:left;">
+					<thead>
+						<tr>
+							<th>Key</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>RoleID</td>
+						<td>@_roleDetails.RoleID</td>
+					</tr>
+					<tr>
+						<td>Role name</td>
+						<td><input @bind="@_roleDetails.RoleName"/></td>
+					</tr>
+					<tr>
+						<td>Permissions</td>
+						<td>
+							@foreach (var perm in GetPermissions(_roleDetails))
+							{
+								<label style="display:block;margin:5px 0;cursor:pointer;">
+									<input type="checkbox" @bind="@perm.IsAssigned" />
+									@perm.PermissionName
+								</label>
+							}
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="alert-buttons">
+			<button class="btn btn-outline-success" @onclick="() => CloseDialog(true)">Save</button>
+			<button class="btn btn-outline-primary" @onclick="() => CloseDialog(false)">Cancel</button>
+		</div>
+	</div>
+</ModalDialog>
+
+@code{
+	ModalDialog _modalDialog;
+	tblRole _roleDetails;
+	bool _dialogResult;
+	Task _closePendingTask;
+
+	private async Task CloseDialog(bool isYes)
+	{
+		_dialogResult = isYes;
+		await _modalDialog.HideModalDialog();
+	}
+
+	public async Task<bool> ShowDialog(tblRole role)
+	{
+		_roleDetails = role;
+		_closePendingTask = _modalDialog.ShowModalDialog();
+		await _closePendingTask;
+		return _dialogResult;
+	}
+
+	public class Perm1
+	{
+		public tblRole Role { get; set; }
+		public string PermissionName { get; set; }
+		public System.Reflection.PropertyInfo PropertyInfo { get; set; }
+		public bool IsAssigned { get => (bool) this.PropertyInfo.GetValue(this.Role); set => this.PropertyInfo.SetValue(this.Role, value); }
+	}
+
+	public IEnumerable<Perm1> GetPermissions(tblRole role)
+	{
+		return role.GetType().GetProperties()
+			.Where(p => p.PropertyType == typeof(bool))
+			.Select(p => new Perm1()
+			{
+				Role = role,
+				PropertyInfo = p,
+				PermissionName = p.Name,
+				IsAssigned = (bool)p.GetValue(role)
+			});
+	}
+}

@@ -1,0 +1,75 @@
+﻿@inject AppModel App
+@implements IDisposable
+
+<div class="top-row pl-4 navbar navbar-dark">
+	<a class="navbar-brand" href="/">Restaurants Review</a>
+	<button class="navbar-toggler" @onclick="ToggleNavMenu">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+	<ul class="nav flex-column">
+		@if (App.HasPermission(o => o.CanReadReviews))
+		{
+			<li class="nav-item px-3">
+				<NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+					<span class="oi oi-home" aria-hidden="true"></span> Reviews
+				</NavLink>
+			</li>
+		}
+		@if (App.HasPermission(o => o.CanCreateRestaurant) || App.HasPermission(o => o.CanEditRestaurant))
+		{
+			<li class="nav-item px-3">
+				<NavLink class="nav-link" href="restaurants">
+					<span class="oi oi-hard-drive" aria-hidden="true"></span> Restaurants
+				</NavLink>
+			</li>
+		}
+		@if (App.HasPermission(o => o.CanEditMember))
+		{
+			<li class="nav-item px-3">
+				<NavLink class="nav-link" href="users">
+					<span class="oi oi-people" aria-hidden="true"></span> Users
+				</NavLink>
+			</li>
+		}
+		@if (App.HasPermission(o => o.CanEditRole))
+		{
+			<li class="nav-item px-3">
+				<NavLink class="nav-link" href="roles">
+					<span class="oi oi-people" aria-hidden="true"></span> Roles
+				</NavLink>
+			</li>
+		}
+	</ul>
+</div>
+
+@inject NavigationManager Nav
+@code {
+	private bool collapseNavMenu = true;
+
+	private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+	private void ToggleNavMenu()
+	{
+		collapseNavMenu = !collapseNavMenu;
+	}
+
+	private void NotifyModelChanged(object sender, PropertyChangedEventArgs e)
+	{
+		this.StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		App.PropertyChanged -= NotifyModelChanged;
+	}
+
+	protected override Task OnInitializedAsync()
+	{
+		App.PropertyChanged += NotifyModelChanged;
+		return base.OnInitializedAsync();
+	}
+
+}

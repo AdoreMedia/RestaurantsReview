@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Server\RestaurantsReview.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DotLiquid">
+      <HintPath>Dlls\DotLiquid.dll</HintPath>
+    </Reference>
+    <Reference Include="Namotion.Reflection">
+      <HintPath>Dlls\Namotion.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="NJsonSchema">
+      <HintPath>Dlls\NJsonSchema.dll</HintPath>
+    </Reference>
+    <Reference Include="NJsonSchema.CodeGeneration">
+      <HintPath>Dlls\NJsonSchema.CodeGeneration.dll</HintPath>
+    </Reference>
+    <Reference Include="NJsonSchema.CodeGeneration.CSharp">
+      <HintPath>Dlls\NJsonSchema.CodeGeneration.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="NJsonSchema.CodeGeneration.TypeScript">
+      <HintPath>Dlls\NJsonSchema.CodeGeneration.TypeScript.dll</HintPath>
+    </Reference>
+    <Reference Include="NSwag.CodeGeneration">
+      <HintPath>Dlls\NSwag.CodeGeneration.dll</HintPath>
+    </Reference>
+    <Reference Include="NSwag.CodeGeneration.CSharp">
+      <HintPath>Dlls\NSwag.CodeGeneration.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="NSwag.CodeGeneration.TypeScript">
+      <HintPath>Dlls\NSwag.CodeGeneration.TypeScript.dll</HintPath>
+    </Reference>
+    <Reference Include="NSwag.Core">
+      <HintPath>Dlls\NSwag.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NSwag.Generation">
+      <HintPath>Dlls\NSwag.Generation.dll</HintPath>
+    </Reference>
+    <Reference Include="NSwag.Generation.WebApi">
+      <HintPath>Dlls\NSwag.Generation.WebApi.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="echo $(ProjectPath)&gt;$(TargetDir)ProjectFileLocation.txt" />
+  </Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="$(TargetDir)$(TargetName).exe" />
+	</Target>
+
+</Project>

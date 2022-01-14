@@ -1,0 +1,86 @@
+2021-10-03 00:14:13	This log contains information about the import schema operation into project 'dbRestaurantsReview.Schema' on computer 'DESKTOP-V3I11TG' by user 'misterx'.
+2021-10-03 00:14:14	Import of database schema has started.
+2021-10-03 00:14:20	Gathering database credentials
+2021-10-03 00:14:20	Gathering database options
+2021-10-03 00:14:20	Gathering generic database scoped configuration option
+2021-10-03 00:14:20	Gathering users
+2021-10-03 00:14:20	Gathering roles
+2021-10-03 00:14:20	Gathering application roles
+2021-10-03 00:14:20	Gathering role memberships
+2021-10-03 00:14:20	Gathering filegroups
+2021-10-03 00:14:20	Gathering full-text catalogs
+2021-10-03 00:14:20	Gathering assemblies
+2021-10-03 00:14:20	Gathering certificates
+2021-10-03 00:14:20	Gathering asymmetric keys
+2021-10-03 00:14:20	Gathering symmetric keys
+2021-10-03 00:14:20	Gathering encrypted symmetric keys
+2021-10-03 00:14:20	Gathering schemas
+2021-10-03 00:14:20	Gathering XML schema collections
+2021-10-03 00:14:20	Gathering user-defined data types
+2021-10-03 00:14:20	Gathering user-defined types
+2021-10-03 00:14:20	Gathering table types
+2021-10-03 00:14:20	Gathering unique keys for table types
+2021-10-03 00:14:20	Gathering primary keys for table types
+2021-10-03 00:14:20	Gathering indexes for table types
+2021-10-03 00:14:20	Gathering check constraints for table types
+2021-10-03 00:14:20	Gathering default constraints for table types
+2021-10-03 00:14:20	Gathering partition functions
+2021-10-03 00:14:20	Gathering partition schemes
+2021-10-03 00:14:20	Gathering functions
+2021-10-03 00:14:20	Gathering encrypted functions
+2021-10-03 00:14:20	Gathering aggregates
+2021-10-03 00:14:20	Gathering procedures
+2021-10-03 00:14:20	Gathering encrypted procedures
+2021-10-03 00:14:20	Gathering tables
+2021-10-03 00:14:20	Gathering primary keys
+2021-10-03 00:14:21	Gathering unique constraints
+2021-10-03 00:14:21	Gathering foreign keys
+2021-10-03 00:14:21	Gathering default constraints
+2021-10-03 00:14:21	Gathering check constraints
+2021-10-03 00:14:21	Gathering views
+2021-10-03 00:14:21	Gathering encrypted views
+2021-10-03 00:14:21	Gathering indexes
+2021-10-03 00:14:21	Gathering statistics
+2021-10-03 00:14:21	Gathering full-text index stoplists
+2021-10-03 00:14:21	Gathering search property lists
+2021-10-03 00:14:21	Gathering search properties
+2021-10-03 00:14:21	Gathering full-text indexes
+2021-10-03 00:14:21	Gathering column store indexes
+2021-10-03 00:14:21	Gathering spatial indexes
+2021-10-03 00:14:21	Gathering XML indexes
+2021-10-03 00:14:21	Gathering Selective XML indexes
+2021-10-03 00:14:21	Gathering encrypted triggers
+2021-10-03 00:14:21	Gathering triggers
+2021-10-03 00:14:21	Gathering encrypted and clr ddl triggers
+2021-10-03 00:14:21	Gathering ddl triggers
+2021-10-03 00:14:21	Creating edge constraints
+2021-10-03 00:14:21	Gathering synonyms
+2021-10-03 00:14:21	Gathering defaults
+2021-10-03 00:14:21	Gathering data constraint uddt bindings
+2021-10-03 00:14:21	Gathering rules
+2021-10-03 00:14:21	Gathering data constraint uddt bindings
+2021-10-03 00:14:21	Gathering message types
+2021-10-03 00:14:21	Gathering queues
+2021-10-03 00:14:21	Gathering contracts
+2021-10-03 00:14:21	Gathering services
+2021-10-03 00:14:21	Gathering event notifications
+2021-10-03 00:14:21	Gathering remote service bindings
+2021-10-03 00:14:21	Gathering broker priorities
+2021-10-03 00:14:21	Gathering signatures
+2021-10-03 00:14:21	Gathering data compression options
+2021-10-03 00:14:21	Gathering sequence types
+2021-10-03 00:14:21	Gathering security policies
+2021-10-03 00:14:21	Gather column encryption keys
+2021-10-03 00:14:21	Gathering column master keys
+2021-10-03 00:14:21	Gathering external data sources
+2021-10-03 00:14:21	Gathering external file formats
+2021-10-03 00:14:21	Gathering external tables
+2021-10-03 00:14:21	Gathering extended properties
+2021-10-03 00:14:21	Gathering credentials
+2021-10-03 00:14:21	Gathering logins
+2021-10-03 00:14:21	Gathering server audits
+2021-10-03 00:14:23	Scanning project for duplicate elements
+2021-10-03 00:14:23	Finished duplicate element processing
+2021-10-03 00:14:24	Finished importing database.
+2021-10-03 00:14:24	A summary of the import was saved to the following location: C:\LOCAL\VSPROJECTS\California.Core\Projects\RestaurantsReview\RestaurantsReview\dbRestaurantsReview.Schema\Import Schema Logs\dbRestaurantsReview._20211002101413.log
+2021-10-03 00:14:24	Click Finish to continue...

@@ -1,0 +1,12 @@
+﻿@foreach (int starValue in this.Stars)
+{
+	<img src="images/stars/@(starValue <= Math.Round(this.AverageRating.GetValueOrDefault()) ? "star-yellow.png" : "star-black-outline.png")"
+		 class="ratingStar" />
+}
+
+@code {
+	List<int> Stars = Enumerable.Range(1, 5).ToList();
+
+	[Parameter]
+	public decimal? AverageRating { get; set; }
+}
