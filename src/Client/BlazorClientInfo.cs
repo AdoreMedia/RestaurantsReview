@@ -2,6 +2,6 @@
 {
 	public static class BlazorClientInfo
 	{
-		public const string Version = "bf51e896-811b-41be-ae67-095ad83fb70f";
+		public const string Version = "53c23243-c0d7-4695-b677-0465cf868218";
 	}
 }
